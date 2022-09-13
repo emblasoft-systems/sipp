@@ -738,11 +738,16 @@ int createAuthHeaderAKAv1MD5(const char *user, const char *aka_OP,
 
     /* compute XMAC */
     f1(k, rnd, sqn, (unsigned char *) aka_AMF, xmac, op);
+
     if (memcmp(mac, xmac, MACLEN) != 0) {
-        free(nonce);
+        f1(k, rnd, sqn, (unsigned char *) aka_AMF, xmac, op);
         sprintf(result, "createAuthHeaderAKAv1MD5 : MAC != eXpectedMAC -> Server might not know the secret (man-in-the-middle attack?) \n");
-        return 0;
+/*
+          free(nonce);
+          return 0;
+*/
     }
+
 
     /* Check SQN, compute AUTS if needed and authorization parameter */
     /* the condition below is wrong.
